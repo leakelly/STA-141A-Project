@@ -1,0 +1,67 @@
+---
+title: "Project STAR First Grade Math Scores Investigation"
+author: "Team 1"
+date: "March 5, 2021"
+output:
+  html_document:
+    df_print: paged
+    number_sections: yes
+---
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(
+  fig.pos = 'H',
+  warning = FALSE,
+  message = FALSE
+)
+library(knitr)
+library("rmarkdown")
+library(foreign)
+library(dplyr)
+library(ggplot2)
+```
+
+***
+
+```{r}
+# Import WHO COVID Data, CDC Depression and Anxiety Data, and Google Trends
+COVID <- read.csv(file = "WHO-COVID-19-global-data.csv")
+CDC <- read.csv(file = "CDC_Anxiety.csv")
+GOOGLE <- read.csv(file = "Google_US_Depression_Anxiety.csv")
+```
+
+Reproducibility:
+- The source file  (e.g., RMD file)  is well-documented with reproducibility in mind. For instance, a readme document is included to offer instructions for using these files, codes are well-commented, the files are well-structured, the script/file are tested in various systems, etc.
+
+# Introduction
+Rubric:
+- The introduction clearly states the questions of interest and the impact of results of this data analysis, along with real-world motivation. 
+- In addition, the introduction provides a precise and concise description of the problem setup, source of data, key variables, and possible hypotheses. 
+- Readers that are familiar with this topic can easily understand the introduction and recognize the importance of this project. 
+
+# Background
+Rubric:
+- The report contains extensive and selective discussion of the source of data, target population, sampling mechanism, explanation of variables, and  reviews of existing research or known results that are relevant to this topic. 
+- The background discussion gives readers, who are familiar with this topic or statistics, sufficient information to place this analysis in the literature, e.g., can find research with similar tasks, can compare the results in this report against other results.
+
+# Descriptive Analysis
+Rubric:
+- The descriptive analysis provides thorough descriptive statistics for most variables, which include univariate descriptive statistics for all variables (mean, standard deviations, missing values,  quantiles, etc.), multivariate descriptives of key variables, and insightful patterns in the data set. The descriptives are presented in visually appealing and informative formats. 
+- Readers that are familiar with this topic or statistics understand the major features in this data set, and gain new insights of this data set that are not possible without the descriptives in this report.
+
+# Predictive/Inferential Analysis
+Rubric:
+- The report clearly states the statistical model, method, or procedure in use, which includes the introduction of notation, interpretation of the parameters, statements of assumptions, etc. There are no major errors in the model and implementation of the model. 
+- The report provides sound justification of the chosen model and the associated assumptions in the context of the data set. Analysis results are well-intepreted with appealing visualization that answers the stated questions of interest . 
+- Readers that are familiar with this topic or statistics can understand the proposed model/method/procedure and the retionale behind it. Most concerns or disagreements have been addressed in the report. 
+- Furthermore, based on the report, readers who have sufficient knowledge in statistics can fully reproduce the analysis on their own.
+
+# Sensitivity Analysis
+Rubric:
+- The report conducts extensive sentivity analysis to examine the plausibility of key assumptions in this analysis using visualization and rigorous testings.  In addition, results from alternative methods are obtained and compared with results in the main analysis,  to evaluate the impacts of key assumptions. 
+- Results from the sensitivity analysis are interpreted in the context of the data set, and provide insights and suggestions for future analysis. Readers that are familiar with this topic or statistics gain confidence in the authors' analysis and knowledge. 
+
+# Conclusion
+Rubric:
+- The report clearly states the conclusions of the analysis in the context of the data set. The conlusion demonstrates thorough understanding of the model/method/procedure, real-world meaning of the findings, and acknowledgement of caveats of this report. 
+- Readers that are familiar with this topic or statistics can understand the findings in the context of this topic, are aware of the caveats, and can make decisions based on the findings.
+
