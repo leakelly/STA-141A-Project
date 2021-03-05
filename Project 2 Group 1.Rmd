@@ -1,0 +1,264 @@
+---
+title: Project 2 Report 
+date: "Due 5 pm PST March 5th 2021"
+author: "Group 1"
+output:
+  html_document:
+    df_print: paged
+    numbered_sections: yes
+---
+
+## Overview
+
+This document contains instructions on Project 2 for STA 141A in Winter 2021. This document is made with `R markdown`. The `rmd` file to generate this document is available on the course website. 
+
+# Background
+
+## WHO COVID-19 data
+
+We will do an EDA for the WHO COVID-19 data. You can take a look at the [weekly WHO COVID-19 update](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports) for reference.
+
+```{r echo=TRUE, eval=TRUE}
+library(tidyverse)
+```
+
+This data set is maintained by WHO and updated constantly. The first task for you is to understand this data set, e.g., the meaning of the variables and their values. To this end, you can make use of your preferred search engine, or read the documentation for this data set. 
+
+In this project, you are a team of conscientious statisticians, who wish to help the general public understand the ongoing pandemic. 
+
+## Suggested outline 
+
+The following list provides one potential structure of the data analysis report. As this is the final project, the following suggestions are intended to provide one viable route for your project while leaving you as much freedom as possible. 
+
+***
+
+0. Before writing your analysis report, you may want to explore this data set and read about the coronavirus to generate the hypothesis or question to be answered in this report, i.e., the question(s) of interest. You can be creative on this question so long as it meets three conditions.
+
+    a. This question might be meaningful in real-world. 
+    b. A method discussed in this course is employed in solving this question. 
+    c. This question does not ask for causality.  
+
+***
+
+1. Introduce the dataset and the questions of interest. 
+
+2. Review the background of the coronavirus. 
+
+3. Explore this dataset and generate summary statistics that you find informative, and explain your findings. <span style="color:red"> The summary statistics should include at least time, number of cases, number of death, case-mortality rate.</span>
+
+4.  Propose an appropriate model to answer the questions of interest. 
+      a. Explain your notations. 
+      b. State assumptions for your model. 
+      c. Explain why your model is appropriate for this task. 
+
+5.  Fit the proposed model in (4) and explain your results. 
+
+6.  Conduct model diagnostics and/or sensitivity analysis. 
+
+7. Conclude your analysis with a discussion of your findings and caveats of your approach. 
+
+***
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.pos = 'H')
+```
+
+```{r setup, include=FALSE}
+#setting the working directory 
+setwd("C:/Users/leakelly/Desktop/STA 141 A")
+knitr::opts_chunk$set(eval = TRUE, echo = TRUE, fig.align='center')
+
+#loading the covid data 
+covid <- read_csv("https://covid19.who.int/WHO-COVID-19-global-data.csv")
+covid
+
+#loading the CDC anxiety data
+indicators = read.csv("Indicators_of_Anxiety_or_Depression_Based_on_Reported_Frequency_of_Symptoms_During_Last_7_Days.csv", header=TRUE)
+indicators
+
+#subsetting the covid data to include only the data from the US
+covid_US = subset(covid, Country == "United States of America")
+covid_US
+
+#subsetting the CDC anxiety data to include only the measures for anxiety or depressive disorder (combined) and the national measure 
+indicators_US = subset(indicators, Indicator == "Symptoms of Anxiety Disorder or Depressive Disorder" & 
+                         Group == "National Estimate" )
+indicators_US
+
+#removing the na data from the indicators dataset, this leaves 24 values for 24 distinct time periods  
+indicators_US.narm <- indicators_US %>% filter(!is.na(Value))
+```
+
+```{r}
+#plot looking at the cumulative deaths over the dates reported
+qplot(Date_reported, Cumulative_deaths, data = covid_US)
+
+#plot looking at the cases of covid over the dates reported 
+qplot(Date_reported, New_cases, data = covid_US)
+
+#plot looking at the CDC anxiety data over the time reported 
+qplot(Time.Period, Value, data = indicators_US.narm)
+```
+
+```{r}
+#In order to create the linear model first the time periods from both datasets needed to be standardized. The CDC anxiety data has #24 datapoints for distinct time periods. The WHO covid data has 427 datapoints for distinct days. The days in the WHO covid data #that match to the time periods in the CDC anxiety data were then compiled, and averages were taken for new cases and new deaths. #Doing this controls for time in the model. 
+
+dates1 = covid_US[112:124,]
+dates2 = covid_US[126:131,]
+dates3 = covid_US[133:138,]
+dates4 = covid_US[140:145,]
+dates5 = covid_US[147:152,]
+dates6 = covid_US[154:159,]
+dates7 = covid_US[161:166,]
+dates8 = covid_US[168:173,]
+dates9 = covid_US[175:180,]
+dates10 = covid_US[182:187,]
+dates11 = covid_US[189:194,]
+dates12 = covid_US[196:201,]
+dates13 = covid_US[230:242,]
+dates14 = covid_US[244:256,]
+dates15 = covid_US[258:270,]
+dates16 = covid_US[272:284,]
+dates17 = covid_US[286:298,]
+dates18 = covid_US[300:312,]
+dates19 = covid_US[314:326,]
+dates20 = covid_US[328:340,]
+dates21 = covid_US[342:354,]
+dates22 = covid_US[370:382,]
+dates23 = covid_US[384:396,]
+dates24 = covid_US[398:410,]
+
+dates1_cases = mean(dates1$New_cases)
+dates1_deaths = mean(dates1$New_deaths)
+
+dates2_cases = mean(dates2$New_cases)
+dates2_deaths = mean(dates2$New_deaths)
+
+dates3_cases = mean(dates3$New_cases)
+dates3_deaths = mean(dates3$New_deaths)
+
+dates4_cases = mean(dates4$New_cases)
+dates4_deaths = mean(dates4$New_deaths)
+
+dates5_cases = mean(dates5$New_cases)
+dates5_deaths = mean(dates5$New_deaths)
+
+dates6_cases = mean(dates6$New_cases)
+dates6_deaths = mean(dates6$New_deaths)
+
+dates7_cases = mean(dates7$New_cases)
+dates7_deaths = mean(dates7$New_deaths)
+
+dates8_cases = mean(dates8$New_cases)
+dates8_deaths = mean(dates8$New_deaths)
+
+dates9_cases = mean(dates9$New_cases)
+dates9_deaths = mean(dates9$New_deaths)
+
+dates10_cases = mean(dates10$New_cases)
+dates10_deaths = mean(dates10$New_deaths)
+
+dates11_cases = mean(dates11$New_cases)
+dates11_deaths = mean(dates11$New_deaths)
+
+dates12_cases = mean(dates12$New_cases)
+dates12_deaths = mean(dates12$New_deaths)
+
+dates13_cases = mean(dates13$New_cases)
+dates13_deaths = mean(dates13$New_deaths)
+
+dates14_cases = mean(dates14$New_cases)
+dates14_deaths = mean(dates14$New_deaths)
+
+dates15_cases = mean(dates15$New_cases)
+dates15_deaths = mean(dates15$New_deaths)
+
+dates16_cases = mean(dates16$New_cases)
+dates16_deaths = mean(dates16$New_deaths)
+
+dates17_cases = mean(dates17$New_cases)
+dates17_deaths = mean(dates17$New_deaths)
+
+dates18_cases = mean(dates18$New_cases)
+dates18_deaths = mean(dates18$New_deaths)
+
+dates19_cases = mean(dates19$New_cases)
+dates19_deaths = mean(dates19$New_deaths)
+
+dates20_cases = mean(dates20$New_cases)
+dates20_deaths = mean(dates20$New_deaths)
+
+dates21_cases = mean(dates21$New_cases)
+dates21_deaths = mean(dates21$New_deaths)
+
+dates22_cases = mean(dates22$New_cases)
+dates22_deaths = mean(dates22$New_deaths)
+
+dates23_cases = mean(dates23$New_cases)
+dates23_deaths = mean(dates23$New_deaths)
+
+dates24_cases = mean(dates24$New_cases)
+dates24_deaths = mean(dates24$New_deaths)
+
+dates = c("dates1", "dates2", "dates3", "dates4", "dates5", "dates 6", "dates7", "dates8", "dates9", "dates10", "dates11", "dates12", "dates13", "dates14", "dates15", "dates16", "dates17", "dates18", "dates19", "dates20", "dates21", "dates22", "dates23", "dates24")
+
+cases = c(dates1_cases, dates2_cases, dates3_cases, dates4_cases, dates5_cases, dates6_cases, dates7_cases, dates8_cases, dates9_cases, dates10_cases, dates11_cases, dates12_cases, dates13_cases, dates14_cases, dates15_cases, dates16_cases, dates17_cases, dates18_cases, dates19_cases, dates20_cases, dates21_cases, dates22_cases, dates23_cases, dates24_cases)
+
+deaths = c(dates1_deaths, dates2_deaths, dates3_deaths, dates4_deaths, dates5_deaths, dates6_deaths, dates7_deaths, dates8_deaths, dates9_deaths, dates10_deaths, dates11_deaths, dates12_deaths, dates13_deaths, dates14_deaths, dates15_deaths, dates16_deaths, dates17_deaths, dates18_deaths, dates19_deaths, dates20_deaths, dates21_deaths, dates22_deaths, dates23_deaths, dates24_deaths)
+
+anxiety_value = indicators_US.narm$Value
+
+#The compiled data has the date, the average number of cases for that date period, the average number of deaths for that date #period, and the reported CDC anxiety value for that data period. 
+compiled_data = data.frame(dates, cases, deaths, anxiety_value)
+compiled_data
+```
+```{r}
+#Plot showing new cases vs anxiety value 
+plot(x=cases, y=anxiety_value, main="cases ~ anxiety_value")  
+
+#Plot showing new deaths vs anxiety value 
+plot(x=deaths, y=anxiety_value, main="deaths ~ anxiety_value")
+```
+
+```{r}
+#Basic linear model relating new cases vs anxiety value, the reported summary shows that the slope (depression_value) is significant #and positive for this relationship. 
+linearMod_cases <- lm(cases ~ anxiety_value, data=compiled_data)
+summary(linearMod_cases)
+```
+
+```{r}
+#Basic linear model relating new deaths vs anxiety value, the reported summary shows that the slope (depression_value) is not #significant and positive for this relationship. 
+linearMod_deaths <- lm(deaths ~ anxiety_value, data=compiled_data)
+summary(linearMod_deaths)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
